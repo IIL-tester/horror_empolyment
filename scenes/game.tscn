@@ -1,0 +1,274 @@
+[gd_scene format=3 uid="uid://ctms21xrdffxd"]
+
+[ext_resource type="Script" uid="uid://bpu20maoyvki0" path="res://scripts/game.gd" id="1_uwrxv"]
+[ext_resource type="Texture2D" uid="uid://dq2f3t6hv7kj6" path="res://icon.svg" id="2_yqjtg"]
+[ext_resource type="Script" uid="uid://cyqe5o7esvrx5" path="res://scripts/window.gd" id="3_lnu2h"]
+
+[node name="game" type="Control" unique_id=1109403509]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_uwrxv")
+
+[node name="background" type="ColorRect" parent="." unique_id=616106830]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1492391538]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="AppGrid" type="GridContainer" parent="MarginContainer" unique_id=1038300436]
+layout_mode = 2
+
+[node name="IIL corporations" type="Button" parent="MarginContainer/AppGrid" unique_id=1498349831]
+layout_mode = 2
+text = "Work"
+icon = ExtResource("2_yqjtg")
+
+[node name="app1" type="Button" parent="MarginContainer/AppGrid" unique_id=1633595018]
+layout_mode = 2
+text = "test"
+
+[node name="app2" type="Button" parent="MarginContainer/AppGrid" unique_id=1535126412]
+layout_mode = 2
+text = "test"
+
+[node name="templete" type="Button" parent="MarginContainer/AppGrid" unique_id=1840725682]
+layout_mode = 2
+text = "templete"
+
+[node name="window" type="Node2D" parent="." unique_id=954918762]
+script = ExtResource("3_lnu2h")
+
+[node name="IIL corporations" type="PanelContainer" parent="window" unique_id=1564430013]
+custom_minimum_size = Vector2(900, 450)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 126.0
+offset_top = 99.0
+offset_right = 1026.0
+offset_bottom = 549.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="topbar-color" type="ColorRect" parent="window/IIL corporations" unique_id=151039455]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+color = Color(0, 0, 0, 1)
+
+[node name="top bar" type="HBoxContainer" parent="window/IIL corporations" unique_id=1995862226]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="top bar" type="VBoxContainer" parent="window/IIL corporations/top bar" unique_id=2012984610]
+layout_direction = 2
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="window_name" type="Label" parent="window/IIL corporations/top bar/top bar" unique_id=779713552]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 1
+text = "Browser"
+
+[node name="edge buttons" type="HBoxContainer" parent="window/IIL corporations/top bar" unique_id=1164781726]
+custom_minimum_size = Vector2(0, 30)
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Exit button" type="Button" parent="window/IIL corporations/top bar/edge buttons" unique_id=828035269]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+text = "X"
+
+[node name="resize button" type="Button" parent="window/IIL corporations/top bar/edge buttons" unique_id=415086940]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+text = "🗖"
+
+[node name="app1" type="PanelContainer" parent="window" unique_id=865254750]
+visible = false
+custom_minimum_size = Vector2(900, 450)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 126.0
+offset_top = 99.0
+offset_right = 1026.0
+offset_bottom = 549.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="topbar-color" type="ColorRect" parent="window/app1" unique_id=22239830]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+color = Color(0, 0, 0, 1)
+
+[node name="top bar" type="HBoxContainer" parent="window/app1" unique_id=301965568]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="top bar" type="VBoxContainer" parent="window/app1/top bar" unique_id=288230624]
+layout_direction = 2
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="window_name" type="Label" parent="window/app1/top bar/top bar" unique_id=1239510200]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 1
+text = "Browser"
+
+[node name="edge buttons" type="HBoxContainer" parent="window/app1/top bar" unique_id=2137954169]
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Exit button" type="Button" parent="window/app1/top bar/edge buttons" unique_id=450432228]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+text = "X"
+
+[node name="resize button" type="Button" parent="window/app1/top bar/edge buttons" unique_id=1026516482]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+text = "🗖"
+
+[node name="app2" type="PanelContainer" parent="window" unique_id=564195956]
+visible = false
+custom_minimum_size = Vector2(900, 450)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 126.0
+offset_top = 99.0
+offset_right = 1026.0
+offset_bottom = 549.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="topbar-color" type="ColorRect" parent="window/app2" unique_id=1300596791]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+color = Color(0, 0, 0, 1)
+
+[node name="top bar" type="HBoxContainer" parent="window/app2" unique_id=69937787]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="top bar" type="VBoxContainer" parent="window/app2/top bar" unique_id=95954820]
+layout_direction = 2
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="window_name" type="Label" parent="window/app2/top bar/top bar" unique_id=1496631964]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 1
+text = "Browser"
+
+[node name="edge buttons" type="HBoxContainer" parent="window/app2/top bar" unique_id=164004776]
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Exit button" type="Button" parent="window/app2/top bar/edge buttons" unique_id=467820404]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+text = "X"
+
+[node name="resize button" type="Button" parent="window/app2/top bar/edge buttons" unique_id=315656553]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+text = "🗖"
+
+[node name="templete" type="PanelContainer" parent="window" unique_id=1671421566]
+visible = false
+custom_minimum_size = Vector2(900, 450)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 126.0
+offset_top = 99.0
+offset_right = 1026.0
+offset_bottom = 549.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="topbar-color" type="ColorRect" parent="window/templete" unique_id=1892103257]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+color = Color(0, 0, 0, 1)
+
+[node name="top bar" type="HBoxContainer" parent="window/templete" unique_id=362074168]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="top bar" type="VBoxContainer" parent="window/templete/top bar" unique_id=1850978587]
+layout_direction = 2
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="window_name" type="Label" parent="window/templete/top bar/top bar" unique_id=1121676139]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 1
+text = "Browser"
+
+[node name="edge buttons" type="HBoxContainer" parent="window/templete/top bar" unique_id=1282657765]
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Exit button" type="Button" parent="window/templete/top bar/edge buttons" unique_id=1928418941]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+text = "X"
+
+[node name="resize button" type="Button" parent="window/templete/top bar/edge buttons" unique_id=916674062]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+text = "🗖"
+
+[node name="Label" type="Label" parent="window/templete" unique_id=501387380]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Add Content Here"
+horizontal_alignment = 1
