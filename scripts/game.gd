@@ -14,16 +14,16 @@ var minute: int = 0
 var time_accumulator: float = 0.0
 
 var normal_speed: float = 3.0
-var fast_speed: float = 10.0 
+var fast_speed: float = 10.0
 var current_time_speed: float = normal_speed
 var is_fast_forwarding: bool = false
 
-const PADDING = 20 
-const ICON_SPACING = 15 
-const ICON_SIZE = Vector2(64, 80) 
+const PADDING = 20
+const ICON_SPACING = 15
+const ICON_SIZE = Vector2(64, 80)
 
 func _ready() -> void:
-	alerts.text = "" 
+	alerts.text = ""
 	for window in windows_folder.get_children():
 		window.hide()
 	setup_desktop_environment()

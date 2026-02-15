@@ -133,6 +133,7 @@ size_flags_vertical = 4
 
 [node name="daily_funds" type="Label" parent="window/IIL corporations/content/main_buttons" unique_id=405515489]
 layout_mode = 2
+horizontal_alignment = 1
 
 [node name="approve" type="Button" parent="window/IIL corporations/content/main_buttons" unique_id=154722603]
 custom_minimum_size = Vector2(100, 50)
@@ -208,6 +209,7 @@ size_flags_vertical = 4
 text = "🗖"
 
 [node name="UPGRADE" type="PanelContainer" parent="window" unique_id=865254750]
+visible = false
 custom_minimum_size = Vector2(900, 450)
 anchors_preset = 8
 anchor_left = 0.5
