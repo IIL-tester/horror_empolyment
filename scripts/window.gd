@@ -1,7 +1,9 @@
 extends Node2D
 
 var dragging_node: Control = null
-var resizing_node: Control = null
+var resizing_right: Control = null
+var resizing_left: Control = null
+
 var drag_offset = Vector2()
 var window_restore_data = {} 
 
@@ -23,7 +25,6 @@ func _setup_window_functionality(window: Control) -> void:
 		
 	var max_btn = window.find_child("resize button", true, false)
 	if max_btn and max_btn is Button:
-		# Use callable to ensure we don't connect multiple times
 		var toggle_call = _toggle_maximize.bind(window)
 		if not max_btn.pressed.is_connected(toggle_call):
 			max_btn.pressed.connect(toggle_call)
@@ -53,7 +54,8 @@ func _input(event: InputEvent) -> void:
 				_attempt_action()
 			else:
 				dragging_node = null
-				resizing_node = null
+				resizing_right = null
+				resizing_left = null
 
 	if event is InputEventMouseMotion:
 		if dragging_node:
@@ -63,10 +65,23 @@ func _input(event: InputEvent) -> void:
 			
 			dragging_node.global_position = event.global_position - drag_offset
 			
-		elif resizing_node:
+		elif resizing_right:
 			var mouse_pos = event.global_position
-			var new_size = mouse_pos - resizing_node.global_position
-			resizing_node.size = Vector2(max(300, new_size.x), max(200, new_size.y))
+			var new_size = mouse_pos - resizing_right.global_position
+			resizing_right.size = Vector2(max(300, new_size.x), max(200, new_size.y))
+			
+		elif resizing_left:
+			var mouse_diff = event.relative
+			var old_width = resizing_left.size.x
+			resizing_left.size.x = max(300, resizing_left.size.x - mouse_diff.x)
+			
+			# Move position only if size actually changed
+			if resizing_left.size.x != old_width:
+				resizing_left.global_position.x += mouse_diff.x
+			
+			# Still allow Y resizing from the left handle
+			var mouse_pos = event.global_position
+			resizing_left.size.y = max(200, mouse_pos.y - resizing_left.global_position.y)
 
 func _attempt_action() -> void:
 	var mouse_pos = get_global_mouse_position()
@@ -80,10 +95,21 @@ func _attempt_action() -> void:
 				
 			child.move_to_front()
 
-			# FIX: If we are over a button, STOP and let the button's own signal work
 			if _is_mouse_over_button(child, mouse_pos):
-				# Do NOT set dragging_node. Let the button handle the click.
 				return 
+
+			# NEW: Check for handles inside this specific child
+			var br_handle = child.find_child("buttom_right", true, false)
+			if br_handle and br_handle.get_global_rect().has_point(mouse_pos):
+				resizing_right = child
+				get_viewport().set_input_as_handled()
+				return
+
+			var bl_handle = child.find_child("buttom_left", true, false)
+			if bl_handle and bl_handle.get_global_rect().has_point(mouse_pos):
+				resizing_left = child
+				get_viewport().set_input_as_handled()
+				return
 
 			# Check Drag Area (The bar)
 			var title_bar = child.find_child("top bar", true, false)
@@ -97,11 +123,9 @@ func _attempt_action() -> void:
 			return
 
 func _is_mouse_over_button(node: Node, mouse_pos: Vector2) -> bool:
-	# If this specific node is a button and the mouse is over it, return true
 	if node is Button and node.get_global_rect().has_point(mouse_pos):
 		return true
 	
-	# Recursively check all children (like the buttons inside your PanelContainer)
 	for child in node.get_children():
 		if _is_mouse_over_button(child, mouse_pos):
 			return true

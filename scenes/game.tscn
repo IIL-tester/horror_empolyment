@@ -5,6 +5,9 @@
 [ext_resource type="Script" uid="uid://cyqe5o7esvrx5" path="res://scripts/window.gd" id="3_lnu2h"]
 [ext_resource type="Script" uid="uid://sug23bvk2mvf" path="res://scripts/iil_corporations.gd" id="4_lbhrr"]
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_lbhrr"]
+load_path = "res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex"
+
 [node name="game" type="Control" unique_id=1109403509]
 layout_mode = 3
 anchors_preset = 15
@@ -79,7 +82,7 @@ layout_mode = 2
 [node name="IIL corporations" type="Button" parent="MarginContainer/AppGrid" unique_id=1498349831]
 layout_mode = 2
 text = "Work"
-icon = ExtResource("2_yqjtg")
+icon = SubResource("CompressedTexture2D_lbhrr")
 
 [node name="UPGRADE" type="Button" parent="MarginContainer/AppGrid" unique_id=1633595018]
 layout_mode = 2
@@ -99,7 +102,7 @@ text = "templete"
 script = ExtResource("3_lnu2h")
 
 [node name="IIL corporations" type="PanelContainer" parent="window" unique_id=1564430013]
-custom_minimum_size = Vector2(900, 450)
+custom_minimum_size = Vector2(300, 300)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -115,6 +118,15 @@ script = ExtResource("4_lbhrr")
 
 [node name="content" type="Control" parent="window/IIL corporations" unique_id=2106165941]
 layout_mode = 2
+
+[node name="background" type="ColorRect" parent="window/IIL corporations/content" unique_id=274848225]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.13333334, 0.13333334, 0.13333334, 1)
 
 [node name="main_buttons" type="VBoxContainer" parent="window/IIL corporations/content" unique_id=658405200]
 layout_mode = 1
@@ -167,6 +179,7 @@ offset_top = 33.0
 offset_right = -106.0
 grow_horizontal = 2
 grow_vertical = 2
+autowrap_mode = 2
 
 [node name="topbar-color" type="ColorRect" parent="window/IIL corporations" unique_id=151039455]
 custom_minimum_size = Vector2(0, 30)
@@ -208,9 +221,38 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 text = "🗖"
 
+[node name="ResizeHandle" type="Control" parent="window/IIL corporations" unique_id=455927794]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="buttom_right" type="ColorRect" parent="window/IIL corporations/ResizeHandle" unique_id=496848839]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -20.0
+grow_horizontal = 0
+grow_vertical = 0
+color = Color(0.13725491, 0.13725491, 0.13725491, 1)
+
+[node name="buttom_left" type="ColorRect" parent="window/IIL corporations/ResizeHandle" unique_id=1552630072]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -20.0
+offset_right = 20.0
+grow_vertical = 0
+color = Color(0.13725491, 0.13725491, 0.13725491, 1)
+
 [node name="UPGRADE" type="PanelContainer" parent="window" unique_id=865254750]
 visible = false
-custom_minimum_size = Vector2(900, 450)
+custom_minimum_size = Vector2(300, 300)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -262,9 +304,38 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 text = "🗖"
 
+[node name="ResizeHandle" type="Control" parent="window/UPGRADE" unique_id=450805236]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="buttom_right" type="ColorRect" parent="window/UPGRADE/ResizeHandle" unique_id=537440155]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -20.0
+grow_horizontal = 0
+grow_vertical = 0
+color = Color(0.13725491, 0.13725491, 0.13725491, 1)
+
+[node name="buttom_left" type="ColorRect" parent="window/UPGRADE/ResizeHandle" unique_id=231866567]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -20.0
+offset_right = 20.0
+grow_vertical = 0
+color = Color(0.13725491, 0.13725491, 0.13725491, 1)
+
 [node name="Game" type="PanelContainer" parent="window" unique_id=564195956]
 visible = false
-custom_minimum_size = Vector2(900, 450)
+custom_minimum_size = Vector2(300, 300)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -316,6 +387,36 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 text = "🗖"
 
+[node name="ResizeHandle" type="Control" parent="window/Game" unique_id=888765102]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="buttom_right" type="ColorRect" parent="window/Game/ResizeHandle" unique_id=1554557984]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -20.0
+grow_horizontal = 0
+grow_vertical = 0
+color = Color(0.13725491, 0.13725491, 0.13725491, 1)
+
+[node name="buttom_left" type="ColorRect" parent="window/Game/ResizeHandle" unique_id=916629700]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -20.0
+offset_right = 20.0
+grow_vertical = 0
+color = Color(0.13725491, 0.13725491, 0.13725491, 1)
+
 [node name="templete" type="PanelContainer" parent="window" unique_id=1671421566]
 visible = false
 custom_minimum_size = Vector2(900, 450)
@@ -330,6 +431,21 @@ offset_right = 1026.0
 offset_bottom = 549.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="content" type="Control" parent="window/templete" unique_id=76396333]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="window/templete/content" unique_id=501387380]
+layout_mode = 0
+offset_left = 380.0
+offset_top = 213.0
+offset_right = 519.0
+offset_bottom = 236.0
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Add Content Here"
+horizontal_alignment = 1
 
 [node name="topbar-color" type="ColorRect" parent="window/templete" unique_id=1892103257]
 custom_minimum_size = Vector2(0, 30)
@@ -370,19 +486,34 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 text = "🗖"
 
-[node name="content" type="Control" parent="window/templete" unique_id=76396333]
+[node name="ResizeHandle" type="Control" parent="window/templete" unique_id=1467664913]
 layout_mode = 2
+size_flags_vertical = 8
 
-[node name="Label" type="Label" parent="window/templete/content" unique_id=501387380]
-layout_mode = 0
-offset_left = 380.0
-offset_top = 213.0
-offset_right = 519.0
-offset_bottom = 236.0
-size_flags_horizontal = 4
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Add Content Here"
-horizontal_alignment = 1
+[node name="buttom_right" type="ColorRect" parent="window/templete/ResizeHandle" unique_id=1680588512]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -20.0
+grow_horizontal = 0
+grow_vertical = 0
+color = Color(0.13725491, 0.13725491, 0.13725491, 1)
+
+[node name="buttom_left" type="ColorRect" parent="window/templete/ResizeHandle" unique_id=1214700006]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -20.0
+offset_right = 20.0
+grow_vertical = 0
+color = Color(0.13725491, 0.13725491, 0.13725491, 1)
 
 [connection signal="pressed" from="window/IIL corporations/content/main_buttons/approve" to="window/IIL corporations" method="_on_approve_pressed"]
 [connection signal="pressed" from="window/IIL corporations/content/main_buttons/deny" to="window/IIL corporations" method="_on_deny_pressed"]
