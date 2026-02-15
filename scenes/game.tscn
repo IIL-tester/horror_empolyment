@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://bpu20maoyvki0" path="res://scripts/game.gd" id="1_uwrxv"]
 [ext_resource type="Texture2D" uid="uid://dq2f3t6hv7kj6" path="res://icon.svg" id="2_yqjtg"]
 [ext_resource type="Script" uid="uid://cyqe5o7esvrx5" path="res://scripts/window.gd" id="3_lnu2h"]
+[ext_resource type="Script" uid="uid://sug23bvk2mvf" path="res://scripts/iil_corporations.gd" id="4_lbhrr"]
 
 [node name="game" type="Control" unique_id=1109403509]
 layout_mode = 3
@@ -22,6 +23,51 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.2, 0.2, 0.2, 1)
 
+[node name="Alerts" type="MarginContainer" parent="." unique_id=413284033]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+
+[node name="Alerts" type="Label" parent="Alerts" unique_id=336964338]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[node name="task_bar" type="PanelContainer" parent="." unique_id=1345487075]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="task_bar" unique_id=938592869]
+layout_mode = 2
+theme_override_constants/margin_right = 7
+
+[node name="time" type="Label" parent="task_bar/MarginContainer" unique_id=246277814]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "12:00"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="task_bar" unique_id=867196220]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Shutdown" type="Button" parent="task_bar/HBoxContainer" unique_id=1067940316]
+layout_mode = 2
+text = "Shutdown"
+
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=1492391538]
 layout_mode = 0
 offset_right = 40.0
@@ -35,15 +81,17 @@ layout_mode = 2
 text = "Work"
 icon = ExtResource("2_yqjtg")
 
-[node name="app1" type="Button" parent="MarginContainer/AppGrid" unique_id=1633595018]
+[node name="UPGRADE" type="Button" parent="MarginContainer/AppGrid" unique_id=1633595018]
 layout_mode = 2
-text = "test"
+text = "UPGRADE"
+icon = ExtResource("2_yqjtg")
 
-[node name="app2" type="Button" parent="MarginContainer/AppGrid" unique_id=1535126412]
+[node name="Game" type="Button" parent="MarginContainer/AppGrid" unique_id=1535126412]
 layout_mode = 2
 text = "test"
 
 [node name="templete" type="Button" parent="MarginContainer/AppGrid" unique_id=1840725682]
+visible = false
 layout_mode = 2
 text = "templete"
 
@@ -61,6 +109,61 @@ offset_left = 126.0
 offset_top = 99.0
 offset_right = 1026.0
 offset_bottom = 549.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("4_lbhrr")
+
+[node name="content" type="Control" parent="window/IIL corporations" unique_id=2106165941]
+layout_mode = 2
+
+[node name="main_buttons" type="VBoxContainer" parent="window/IIL corporations/content" unique_id=658405200]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -79.0
+offset_bottom = 79.0
+grow_horizontal = 0
+grow_vertical = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+
+[node name="daily_funds" type="Label" parent="window/IIL corporations/content/main_buttons" unique_id=405515489]
+layout_mode = 2
+
+[node name="approve" type="Button" parent="window/IIL corporations/content/main_buttons" unique_id=154722603]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Approve"
+
+[node name="deny" type="Button" parent="window/IIL corporations/content/main_buttons" unique_id=1784101286]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Deny"
+
+[node name="skip" type="Button" parent="window/IIL corporations/content/main_buttons" unique_id=134744410]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Skip"
+
+[node name="happiness_level" type="ProgressBar" parent="window/IIL corporations/content/main_buttons" unique_id=1929512385]
+layout_mode = 2
+
+[node name="Letter" type="Label" parent="window/IIL corporations/content" unique_id=1478714888]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 33.0
+offset_right = -106.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -84,7 +187,7 @@ size_flags_vertical = 0
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 1
-text = "Browser"
+text = "work"
 
 [node name="edge buttons" type="HBoxContainer" parent="window/IIL corporations/top bar" unique_id=1164781726]
 custom_minimum_size = Vector2(0, 30)
@@ -104,8 +207,7 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 text = "🗖"
 
-[node name="app1" type="PanelContainer" parent="window" unique_id=865254750]
-visible = false
+[node name="UPGRADE" type="PanelContainer" parent="window" unique_id=865254750]
 custom_minimum_size = Vector2(900, 450)
 anchors_preset = 8
 anchor_left = 0.5
@@ -119,46 +221,46 @@ offset_bottom = 549.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="topbar-color" type="ColorRect" parent="window/app1" unique_id=22239830]
+[node name="topbar-color" type="ColorRect" parent="window/UPGRADE" unique_id=22239830]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
 color = Color(0, 0, 0, 1)
 
-[node name="top bar" type="HBoxContainer" parent="window/app1" unique_id=301965568]
+[node name="top bar" type="HBoxContainer" parent="window/UPGRADE" unique_id=301965568]
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="top bar" type="VBoxContainer" parent="window/app1/top bar" unique_id=288230624]
+[node name="top bar" type="VBoxContainer" parent="window/UPGRADE/top bar" unique_id=288230624]
 layout_direction = 2
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="window_name" type="Label" parent="window/app1/top bar/top bar" unique_id=1239510200]
+[node name="window_name" type="Label" parent="window/UPGRADE/top bar/top bar" unique_id=1239510200]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 1
 text = "Browser"
 
-[node name="edge buttons" type="HBoxContainer" parent="window/app1/top bar" unique_id=2137954169]
+[node name="edge buttons" type="HBoxContainer" parent="window/UPGRADE/top bar" unique_id=2137954169]
 layout_direction = 3
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Exit button" type="Button" parent="window/app1/top bar/edge buttons" unique_id=450432228]
+[node name="Exit button" type="Button" parent="window/UPGRADE/top bar/edge buttons" unique_id=450432228]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 text = "X"
 
-[node name="resize button" type="Button" parent="window/app1/top bar/edge buttons" unique_id=1026516482]
+[node name="resize button" type="Button" parent="window/UPGRADE/top bar/edge buttons" unique_id=1026516482]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 text = "🗖"
 
-[node name="app2" type="PanelContainer" parent="window" unique_id=564195956]
+[node name="Game" type="PanelContainer" parent="window" unique_id=564195956]
 visible = false
 custom_minimum_size = Vector2(900, 450)
 anchors_preset = 8
@@ -173,40 +275,40 @@ offset_bottom = 549.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="topbar-color" type="ColorRect" parent="window/app2" unique_id=1300596791]
+[node name="topbar-color" type="ColorRect" parent="window/Game" unique_id=1300596791]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
 color = Color(0, 0, 0, 1)
 
-[node name="top bar" type="HBoxContainer" parent="window/app2" unique_id=69937787]
+[node name="top bar" type="HBoxContainer" parent="window/Game" unique_id=69937787]
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="top bar" type="VBoxContainer" parent="window/app2/top bar" unique_id=95954820]
+[node name="top bar" type="VBoxContainer" parent="window/Game/top bar" unique_id=95954820]
 layout_direction = 2
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="window_name" type="Label" parent="window/app2/top bar/top bar" unique_id=1496631964]
+[node name="window_name" type="Label" parent="window/Game/top bar/top bar" unique_id=1496631964]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 1
 text = "Browser"
 
-[node name="edge buttons" type="HBoxContainer" parent="window/app2/top bar" unique_id=164004776]
+[node name="edge buttons" type="HBoxContainer" parent="window/Game/top bar" unique_id=164004776]
 layout_direction = 3
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Exit button" type="Button" parent="window/app2/top bar/edge buttons" unique_id=467820404]
+[node name="Exit button" type="Button" parent="window/Game/top bar/edge buttons" unique_id=467820404]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 text = "X"
 
-[node name="resize button" type="Button" parent="window/app2/top bar/edge buttons" unique_id=315656553]
+[node name="resize button" type="Button" parent="window/Game/top bar/edge buttons" unique_id=315656553]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
@@ -266,9 +368,20 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 text = "🗖"
 
-[node name="Label" type="Label" parent="window/templete" unique_id=501387380]
+[node name="content" type="Control" parent="window/templete" unique_id=76396333]
 layout_mode = 2
+
+[node name="Label" type="Label" parent="window/templete/content" unique_id=501387380]
+layout_mode = 0
+offset_left = 380.0
+offset_top = 213.0
+offset_right = 519.0
+offset_bottom = 236.0
 size_flags_horizontal = 4
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Add Content Here"
 horizontal_alignment = 1
+
+[connection signal="pressed" from="window/IIL corporations/content/main_buttons/approve" to="window/IIL corporations" method="_on_approve_pressed"]
+[connection signal="pressed" from="window/IIL corporations/content/main_buttons/deny" to="window/IIL corporations" method="_on_deny_pressed"]
+[connection signal="pressed" from="window/IIL corporations/content/main_buttons/skip" to="window/IIL corporations" method="_on_skip_pressed"]

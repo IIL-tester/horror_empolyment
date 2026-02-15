@@ -96,14 +96,14 @@ func _attempt_action() -> void:
 			get_viewport().set_input_as_handled()
 			return
 
-func _is_mouse_over_button(window: Control, mouse_pos: Vector2) -> bool:
-	var exit_btn = window.find_child("Exit button", true, false)
-	var max_btn = window.find_child("resize button", true, false)
+func _is_mouse_over_button(node: Node, mouse_pos: Vector2) -> bool:
+	# If this specific node is a button and the mouse is over it, return true
+	if node is Button and node.get_global_rect().has_point(mouse_pos):
+		return true
 	
-	# Check both buttons. If mouse is over either, we shouldn't start a window drag.
-	if exit_btn and exit_btn.get_global_rect().has_point(mouse_pos):
-		return true
-	if max_btn and max_btn.get_global_rect().has_point(mouse_pos):
-		return true
-		
+	# Recursively check all children (like the buttons inside your PanelContainer)
+	for child in node.get_children():
+		if _is_mouse_over_button(child, mouse_pos):
+			return true
+			
 	return false
