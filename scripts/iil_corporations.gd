@@ -7,11 +7,19 @@ extends PanelContainer
 @onready var happiness_level: ProgressBar = $content/main_buttons/happiness_level
 @onready var letter_label: Label = $content/Letter
 
+# after shift UI
+@onready var yes: Button = $content/Letter/MarginContainer/HBoxContainer/yes
+@onready var no: Button = $content/Letter/MarginContainer/HBoxContainer/no
+@onready var hunger_bar: ProgressBar = $content/Letter/MarginContainer/HBoxContainer/VBoxContainer/hunger_level
+@onready var cafeteria_ui: Control = $content/Letter/MarginContainer 
+
 # --- Game Balance Variables ---
 var starting_funds: float = 2500.0
 var conversion_rate: float = 10.0 
+var total_savings: float = 0.0 
 var current_funds: float = 0.0
 var current_happiness: float = 80.0 
+var current_hunger: float = 100.0
 var drain_speed: float = 0.4
 var inactivity_limit: float = 4.0 
 var time_since_last_action: float = 0.0
@@ -44,6 +52,7 @@ var master_letters: Array = [
 
 func _ready() -> void:
 	randomize()
+	cafeteria_ui.hide()
 	reset_for_new_shift()
 
 func reset_for_new_shift() -> void:
@@ -59,6 +68,7 @@ func reset_for_new_shift() -> void:
 	active_shift_deck = active_shift_deck.slice(0, letters_per_shift)
 	
 	approve.show(); deny.show(); skip.show()
+	cafeteria_ui.hide()
 	approve.disabled = false; deny.disabled = false; skip.disabled = false
 	set_process(true)
 	update_ui()
@@ -71,13 +81,17 @@ func _process(delta: float) -> void:
 			current_happiness = clamp(current_happiness, 0, 100)
 			happiness_level.value = current_happiness
 		
+		if current_hunger <= 30.0:
+			var shake_intensity = (30.0 - current_hunger) / 30.0 
+			if randf() < 0.15: 
+				letter_label.pivot_offset = Vector2(randf_range(-8, 8) * shake_intensity, randf_range(-8, 8) * shake_intensity)
+				letter_label.rotation_degrees = randf_range(-2, 2) * shake_intensity
+
 		if current_happiness <= 0: _trigger_game_over()
 
 func update_ui() -> void:
 	daily_funds_label.text = "Funds: $" + str(snapped(current_funds, 0.01))
 	happiness_level.value = current_happiness
-	
-	# Reset any glitch visuals
 	letter_label.pivot_offset = Vector2.ZERO
 	letter_label.rotation = 0
 	
@@ -89,25 +103,16 @@ func update_ui() -> void:
 		_end_shift()
 
 func process_decision(choice: String) -> void:
-	if current_letter_index >= active_shift_deck.size() or processing_active or shift_complete: 
-		return
-	
+	if current_letter_index >= active_shift_deck.size() or processing_active or shift_complete: return
 	var l = active_shift_deck[current_letter_index]
-	
 	if choice == "approve" and current_funds < l["cost"]:
 		letter_label.text = "ERROR: SYSTEM CANNOT AUTHORIZE DEBT."
 		return
-
 	processing_active = true
 	time_since_last_action = 0.0
 	approve.disabled = true; deny.disabled = true; skip.disabled = true
-	
-	var glitch_intensity = 0.0
-	if l["impact"] > 15:
-		glitch_intensity = float(l["impact"]) / 40.0
-	
+	var glitch_intensity = float(l["impact"]) / 40.0 if l["impact"] > 15 else 0.0
 	await _run_upload_sequence(glitch_intensity)
-
 	match choice:
 		"approve":
 			current_happiness = clamp(current_happiness + l["impact"], 0, 100)
@@ -116,7 +121,6 @@ func process_decision(choice: String) -> void:
 			current_happiness -= (l["impact"] * 0.6)
 		"skip":
 			current_happiness -= 15.0 
-
 	current_letter_index += 1
 	processing_active = false
 	approve.disabled = false; deny.disabled = false; skip.disabled = false
@@ -126,60 +130,115 @@ func _run_upload_sequence(intensity: float) -> void:
 	var base_text = "UPLOADING TO CENTRAL... \nDO NOT LOOK AT THE SCREEN."
 	var chars = "01#?!@$%&*"
 	var hidden_messages = ["HE IS WATCHING", "WHY DID YOU SIGN?", "IT TASTES LIKE COPPER", "IGNORE THE TEETH"]
-	
 	var duration = 1.2 + (intensity * 1.5)
 	var elapsed = 0.0
-	
 	letter_label.modulate = Color(1, 1, 1)
-	
 	while elapsed < duration:
 		var frame_text = base_text
-		
 		if intensity > 0.3 and randf() < 0.05:
 			frame_text = hidden_messages[randi() % hidden_messages.size()]
 		elif intensity > 0.1 and randf() < intensity:
-			# FIX: Convert to Array explicitly and use length() for strings
 			var text_array = Array(frame_text.split(""))
 			for i in range(3):
 				if text_array.size() > 0:
 					var pos = randi() % text_array.size()
 					text_array[pos] = chars[randi() % chars.length()]
-			frame_text = "".join(text_array)
-		
+			frame_text = "".join(PackedStringArray(text_array))
 		letter_label.text = frame_text
-		
 		if intensity > 0.1:
 			letter_label.pivot_offset = Vector2(randf_range(-10, 10) * intensity, randf_range(-10, 10) * intensity)
-		
 		var wait = randf_range(0.05, 0.1)
 		await get_tree().create_timer(wait).timeout
 		elapsed += wait
-	
 	letter_label.pivot_offset = Vector2.ZERO
 
 func _end_shift() -> void:
 	shift_complete = true
 	set_process(false)
 	var paycheck = int(floor(current_happiness * conversion_rate))
+	total_savings += paycheck
 	approve.hide(); deny.hide(); skip.hide()
 	
-	# Recursively search for a parent that can handle the time skip
+	var food_price = get_current_food_price()
+	letter_label.text = "SHIFT COMPLETE.\nPaycheck: $" + str(paycheck) + "\nSavings: $" + str(total_savings) + "\n\nPurchase lunch from the cafeteria?\nCost: $" + str(snapped(food_price, 1))
+	
+	hunger_bar.value = current_hunger
+	yes.disabled = (current_hunger >= 100.0)
+	cafeteria_ui.show()
+
+func get_current_food_price() -> float:
+	# Formula updated: 65% hunger results in $200. 0% hunger results in $400.
+	# (100 - 65) = 35. 200 + (35 * 5.71) is not what we want.
+	# We want: Price = 200 + (65 - current_hunger) * (200/65)
+	return 200.0 + (65.0 - current_hunger) * (200.0 / 65.0)
+
+func _on_yes_pressed():
+	if current_hunger >= 100.0:
+		letter_label.text = "YOU ARE FULL. \nGLUTTONY IS UNPRODUCTIVE."
+		return
+	var food_price = get_current_food_price()
+	if total_savings >= food_price:
+		total_savings -= food_price
+		current_hunger = 100.0
+		_finish_day()
+	else:
+		letter_label.text = "INSUFFICIENT PERSONAL FUNDS.\nSTARVATION IS NOT AN EXCUSE."
+
+func _on_no_pressed():
+	current_hunger = clamp(current_hunger - 35, 0, 100)
+	if current_hunger <= 0:
+		_pay_starvation_fee()
+	else:
+		_finish_day()
+
+func _pay_starvation_fee():
+	var fee = 400.0
+	if total_savings >= fee:
+		total_savings -= fee
+		letter_label.text = "STARVATION DETECTED.\n$400 RECOVERY FEE DEDUCTED.\n\nSTAY PRODUCTIVE."
+		await get_tree().create_timer(3.0).timeout
+		_finish_day()
+	else:
+		_trigger_poverty_death()
+
+func _finish_day():
+	cafeteria_ui.hide()
+	letter_label.text = "REST IS MANDATORY. \n\nNext Shift at 9:00."
 	var desktop = self
 	while desktop != null:
 		if desktop.has_method("trigger_time_skip"):
 			desktop.trigger_time_skip()
 			break
 		desktop = desktop.get_parent()
-	
-	letter_label.modulate = Color(1, 1, 1)
-	letter_label.text = "SHIFT COMPLETE.\nQuota Met.\nPaycheck: $" + str(paycheck) + "\n\nREST IS MANDATORY."
 
-func _trigger_game_over() -> void:
+func _trigger_poverty_death():
+	_apply_horror_screen("Your Fired!\nThe world only has room for the wealthy.")
+
+func _trigger_game_over():
+	_apply_horror_screen("Your Fired!\nThis company doesn't need useless employees.")
+
+func _apply_horror_screen(message: String):
 	set_process(false)
 	shift_complete = true
-	letter_label.modulate = Color(1, 0, 0)
-	letter_label.text = "TERMINATED.\nREASON: EMOTIONAL INSTABILITY.\nGOODBYE."
+	cafeteria_ui.hide()
+	
+	# Hide buttons so they don't peek through
 	approve.hide(); deny.hide(); skip.hide()
+	yes.hide(); no.hide()
+
+	# Find the Main Script (the Control node) and trigger the death screen
+	var main_game = self
+	while main_game != null:
+		if main_game.has_method("trigger_death_screen"):
+			main_game.trigger_death_screen(message)
+			break
+		main_game = main_game.get_parent()
+
+func hard_reset():
+	total_savings = 0.0
+	current_hunger = 100.0
+	# Add any other upgrade variables here to reset them (e.g. conversion_rate = 10.0)
+	reset_for_new_shift()
 
 func _on_approve_pressed(): process_decision("approve")
 func _on_deny_pressed(): process_decision("deny")

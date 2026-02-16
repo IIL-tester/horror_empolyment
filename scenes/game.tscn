@@ -114,6 +114,8 @@ offset_right = 1026.0
 offset_bottom = 549.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 script = ExtResource("4_lbhrr")
 
 [node name="content" type="Control" parent="window/IIL corporations" unique_id=2106165941]
@@ -169,6 +171,7 @@ text = "Skip"
 
 [node name="happiness_level" type="ProgressBar" parent="window/IIL corporations/content/main_buttons" unique_id=1929512385]
 layout_mode = 2
+tooltip_text = "Customer Happiness Level"
 
 [node name="Letter" type="Label" parent="window/IIL corporations/content" unique_id=1478714888]
 layout_mode = 1
@@ -177,9 +180,45 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_top = 33.0
 offset_right = -106.0
+offset_bottom = 5.0
 grow_horizontal = 2
 grow_vertical = 2
 autowrap_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="window/IIL corporations/content/Letter" unique_id=876438753]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+offset_right = 72.0
+grow_vertical = 0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_bottom = 45
+
+[node name="HBoxContainer" type="HBoxContainer" parent="window/IIL corporations/content/Letter/MarginContainer" unique_id=1484254478]
+layout_mode = 2
+
+[node name="yes" type="Button" parent="window/IIL corporations/content/Letter/MarginContainer/HBoxContainer" unique_id=1739076505]
+custom_minimum_size = Vector2(100, 75)
+layout_mode = 2
+text = "Yes"
+
+[node name="no" type="Button" parent="window/IIL corporations/content/Letter/MarginContainer/HBoxContainer" unique_id=394518443]
+custom_minimum_size = Vector2(100, 75)
+layout_mode = 2
+text = "no"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="window/IIL corporations/content/Letter/MarginContainer/HBoxContainer" unique_id=572595146]
+layout_mode = 2
+
+[node name="hunger_level" type="ProgressBar" parent="window/IIL corporations/content/Letter/MarginContainer/HBoxContainer/VBoxContainer" unique_id=2131707611]
+custom_minimum_size = Vector2(30, 75)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 2
+tooltip_text = "Hunger Level"
+fill_mode = 3
 
 [node name="topbar-color" type="ColorRect" parent="window/IIL corporations" unique_id=151039455]
 custom_minimum_size = Vector2(0, 30)
@@ -515,6 +554,47 @@ offset_right = 20.0
 grow_vertical = 0
 color = Color(0.13725491, 0.13725491, 0.13725491, 1)
 
+[node name="dark_screen" type="ColorRect" parent="." unique_id=201172924]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=22649565]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -29.0
+offset_right = 50.0
+offset_bottom = 29.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="quote" type="Label" parent="VBoxContainer" unique_id=1690352734]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0, 0, 1)
+text = "test"
+horizontal_alignment = 1
+
+[node name="restart" type="Button" parent="VBoxContainer" unique_id=1018269588]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Request Job"
+
 [connection signal="pressed" from="window/IIL corporations/content/main_buttons/approve" to="window/IIL corporations" method="_on_approve_pressed"]
 [connection signal="pressed" from="window/IIL corporations/content/main_buttons/deny" to="window/IIL corporations" method="_on_deny_pressed"]
 [connection signal="pressed" from="window/IIL corporations/content/main_buttons/skip" to="window/IIL corporations" method="_on_skip_pressed"]
+[connection signal="pressed" from="window/IIL corporations/content/Letter/MarginContainer/HBoxContainer/yes" to="window/IIL corporations" method="_on_yes_pressed"]
+[connection signal="pressed" from="window/IIL corporations/content/Letter/MarginContainer/HBoxContainer/no" to="window/IIL corporations" method="_on_no_pressed"]
+[connection signal="pressed" from="VBoxContainer/restart" to="." method="_on_restart_pressed"]

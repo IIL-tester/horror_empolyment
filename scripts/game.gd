@@ -7,6 +7,10 @@ extends Control
 @onready var app_grid: GridContainer = $MarginContainer/AppGrid
 @onready var windows_folder: Node2D = $window 
 
+@onready var quote: Label = $VBoxContainer/quote
+@onready var dark_screen: ColorRect = $dark_screen
+@onready var restart: Button = $VBoxContainer/restart
+
 # --- Time Variables ---
 var current_day: int = 1
 var hour: int = 9
@@ -129,3 +133,51 @@ func _on_app_pressed(app_name: String) -> void:
 			target_window.show()
 			target_window.global_position = get_viewport_rect().size / 2 - target_window.size / 2
 		windows_folder.move_child(target_window, -1)
+
+# --- Death Screen Logic ---
+func trigger_death_screen(message: String):
+	# 1. Show the dark screen
+	dark_screen.show()
+	dark_screen.color = Color.BLACK
+	dark_screen.z_index = 100 
+	
+	# 2. Setup the quote
+	quote.show()
+	quote.z_index = 101
+	quote.text = message
+	quote.add_theme_color_override("font_color", Color(0.86, 0.08, 0.24)) 
+	
+	# 3. Hide UI
+	margin_container.hide()
+	$task_bar.hide()
+	
+	# 4. Wait 3 seconds, then show the restart button
+	await get_tree().create_timer(3.0).timeout
+	restart.show()
+	restart.z_index = 102
+
+func _on_restart_pressed():
+	# Wipe everything
+	current_day = 1
+	hour = 9
+	minute = 0
+	
+	# Reset all apps (including savings/hunger in Employment)
+	_find_and_hard_reset_apps(windows_folder)
+	
+	# Hide death screen and bring back the desktop
+	dark_screen.hide()
+	quote.hide()
+	restart.hide()
+	margin_container.show()
+	$task_bar.show()
+	
+	update_time_display()
+	show_alert("RESTORING SYSTEM FROM BACKUP...")
+
+# Special reset for death (wipes persistent stats)
+func _find_and_hard_reset_apps(node: Node):
+	if node.has_method("hard_reset"):
+		node.hard_reset()
+	for child in node.get_children():
+		_find_and_hard_reset_apps(child)
