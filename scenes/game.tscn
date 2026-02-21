@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://dq2f3t6hv7kj6" path="res://icon.svg" id="2_yqjtg"]
 [ext_resource type="Script" uid="uid://cyqe5o7esvrx5" path="res://scripts/window.gd" id="3_lnu2h"]
 [ext_resource type="Script" uid="uid://sug23bvk2mvf" path="res://scripts/iil_corporations.gd" id="4_lbhrr"]
+[ext_resource type="Script" uid="uid://b0gj1846xh7xb" path="res://scripts/upgrade.gd" id="5_iywne"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_lbhrr"]
 load_path = "res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex"
@@ -63,12 +64,13 @@ size_flags_horizontal = 8
 text = "12:00"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="task_bar" unique_id=867196220]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 0
 
 [node name="Shutdown" type="Button" parent="task_bar/HBoxContainer" unique_id=1067940316]
+visible = false
 layout_mode = 2
+disabled = true
 text = "Shutdown"
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=1492391538]
@@ -90,6 +92,7 @@ text = "UPGRADE"
 icon = ExtResource("2_yqjtg")
 
 [node name="Game" type="Button" parent="MarginContainer/AppGrid" unique_id=1535126412]
+visible = false
 layout_mode = 2
 text = "test"
 
@@ -102,6 +105,7 @@ text = "templete"
 script = ExtResource("3_lnu2h")
 
 [node name="IIL corporations" type="PanelContainer" parent="window" unique_id=1564430013]
+visible = false
 custom_minimum_size = Vector2(300, 300)
 anchors_preset = 8
 anchor_left = 0.5
@@ -290,7 +294,6 @@ grow_vertical = 0
 color = Color(0.13725491, 0.13725491, 0.13725491, 1)
 
 [node name="UPGRADE" type="PanelContainer" parent="window" unique_id=865254750]
-visible = false
 custom_minimum_size = Vector2(300, 300)
 anchors_preset = 8
 anchor_left = 0.5
@@ -303,6 +306,76 @@ offset_right = 1026.0
 offset_bottom = 549.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("5_iywne")
+
+[node name="content" type="Control" parent="window/UPGRADE" unique_id=1818261848]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="window/UPGRADE/content" unique_id=220399718]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 35
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="background" type="ColorRect" parent="window/UPGRADE/content/MarginContainer" unique_id=188118870]
+layout_mode = 2
+color = Color(0.13333334, 0.13333334, 0.13333334, 1)
+
+[node name="upgrades" type="Control" parent="window/UPGRADE/content/MarginContainer" unique_id=241906141]
+clip_contents = true
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="window/UPGRADE/content/MarginContainer/upgrades" unique_id=921883444]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+columns = 3
+
+[node name="Button" type="Button" parent="window/UPGRADE/content/MarginContainer/upgrades/GridContainer" unique_id=1502415626]
+clip_contents = true
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+text = "Item 1"
+
+[node name="Button2" type="Button" parent="window/UPGRADE/content/MarginContainer/upgrades/GridContainer" unique_id=911886679]
+clip_contents = true
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+text = "Item 1"
+
+[node name="Button3" type="Button" parent="window/UPGRADE/content/MarginContainer/upgrades/GridContainer" unique_id=2079275337]
+clip_contents = true
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+text = "Item 1"
+
+[node name="Button4" type="Button" parent="window/UPGRADE/content/MarginContainer/upgrades/GridContainer" unique_id=210860969]
+clip_contents = true
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+text = "Item 1"
+
+[node name="Button5" type="Button" parent="window/UPGRADE/content/MarginContainer/upgrades/GridContainer" unique_id=1342799981]
+clip_contents = true
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+text = "Item 1"
+
+[node name="???" type="Button" parent="window/UPGRADE/content/MarginContainer/upgrades/GridContainer" unique_id=1512261108]
+clip_contents = true
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+text = "Item 1"
 
 [node name="topbar-color" type="ColorRect" parent="window/UPGRADE" unique_id=22239830]
 custom_minimum_size = Vector2(0, 30)
@@ -324,7 +397,7 @@ size_flags_vertical = 0
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 1
-text = "Browser"
+text = "Upgrades"
 
 [node name="edge buttons" type="HBoxContainer" parent="window/UPGRADE/top bar" unique_id=2137954169]
 layout_direction = 3
@@ -332,15 +405,17 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Exit button" type="Button" parent="window/UPGRADE/top bar/edge buttons" unique_id=450432228]
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
+size_flags_horizontal = 4
+size_flags_vertical = 0
 text = "X"
 
 [node name="resize button" type="Button" parent="window/UPGRADE/top bar/edge buttons" unique_id=1026516482]
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
+size_flags_horizontal = 0
+size_flags_vertical = 0
 text = "🗖"
 
 [node name="ResizeHandle" type="Control" parent="window/UPGRADE" unique_id=450805236]
@@ -359,7 +434,7 @@ offset_left = -20.0
 offset_top = -20.0
 grow_horizontal = 0
 grow_vertical = 0
-color = Color(0.13725491, 0.13725491, 0.13725491, 1)
+color = Color(1, 1, 1, 0)
 
 [node name="buttom_left" type="ColorRect" parent="window/UPGRADE/ResizeHandle" unique_id=231866567]
 custom_minimum_size = Vector2(20, 20)
@@ -370,7 +445,7 @@ anchor_bottom = 1.0
 offset_top = -20.0
 offset_right = 20.0
 grow_vertical = 0
-color = Color(0.13725491, 0.13725491, 0.13725491, 1)
+color = Color(1, 1, 1, 0)
 
 [node name="Game" type="PanelContainer" parent="window" unique_id=564195956]
 visible = false
@@ -597,4 +672,5 @@ text = "Request Job"
 [connection signal="pressed" from="window/IIL corporations/content/main_buttons/skip" to="window/IIL corporations" method="_on_skip_pressed"]
 [connection signal="pressed" from="window/IIL corporations/content/Letter/MarginContainer/HBoxContainer/yes" to="window/IIL corporations" method="_on_yes_pressed"]
 [connection signal="pressed" from="window/IIL corporations/content/Letter/MarginContainer/HBoxContainer/no" to="window/IIL corporations" method="_on_no_pressed"]
+[connection signal="pressed" from="window/UPGRADE/content/MarginContainer/upgrades/GridContainer/???" to="window/UPGRADE" method="_on__pressed"]
 [connection signal="pressed" from="VBoxContainer/restart" to="." method="_on_restart_pressed"]

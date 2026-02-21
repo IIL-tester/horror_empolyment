@@ -13,8 +13,9 @@ extends PanelContainer
 @onready var hunger_bar: ProgressBar = $content/Letter/MarginContainer/HBoxContainer/VBoxContainer/hunger_level
 @onready var cafeteria_ui: Control = $content/Letter/MarginContainer 
 
-# --- Game Balance Variables ---
-var starting_funds: float = 2500.0
+# --- Progression & Horror Variables ---
+var current_day: int = 1
+var starting_funds: float = 5500.0
 var conversion_rate: float = 10.0 
 var total_savings: float = 0.0 
 var current_funds: float = 0.0
@@ -25,6 +26,13 @@ var inactivity_limit: float = 4.0
 var time_since_last_action: float = 0.0
 var processing_active: bool = false
 var shift_complete: bool = false
+
+# --- Narrative & Ending Logic ---
+var special_timer: float = 15.0
+var is_showing_special: bool = false
+var is_showing_error: bool = false
+var has_bought_mystery_item: bool = false
+var is_marked_for_promotion: bool = false
 
 # --- Shift Logic ---
 var active_shift_deck: Array = []
@@ -55,26 +63,66 @@ func _ready() -> void:
 	cafeteria_ui.hide()
 	reset_for_new_shift()
 
+# Call this from your Upgrades App when "???" is purchased
+func _on_mystery_item_purchased():
+	has_bought_mystery_item = true
+
 func reset_for_new_shift() -> void:
+	# End game check
+	if current_day >= 15 and not shift_complete:
+		_trigger_afterlife_ending()
+		return
+
 	current_funds = starting_funds
 	current_happiness = 80.0
 	current_letter_index = 0
 	shift_complete = false
 	processing_active = false
 	time_since_last_action = 0.0
+	is_showing_special = false
+	is_showing_error = false
 	
 	active_shift_deck = master_letters.duplicate()
 	active_shift_deck.shuffle()
 	active_shift_deck = active_shift_deck.slice(0, letters_per_shift)
 	
+	# --- Story Injections ---
+	if current_day == 2:
+		active_shift_deck.insert(3, {"text": "911 DISPATCH: 'Hang in there, we'll get you out soon enough. Stay away from the vents.'", "cost": 0, "impact": 0, "special": true})
+	
+	if current_day == 4:
+		active_shift_deck.insert(2, {"text": "911 DISPATCH: 'Listen carefully. Buy the item marked \"???\" in your Upgrade App. We've hidden the extraction code inside it.'", "cost": 0, "impact": 0, "special": true})
+
+	if has_bought_mystery_item and not is_marked_for_promotion:
+		is_marked_for_promotion = true
+		active_shift_deck.insert(1, {"text": "MESSAGE FROM THE BOSS: 'You've been such a good employee. Me and HR think you deserve a promotion. We're thinking of doing it on Day 15.'", "cost": 0, "impact": 50, "boss": true, "special": true})
+
+	if current_day == 6:
+		active_shift_deck.insert(2, {"text": "ANONYMOUS: 'They are listening. You have to shutdown the computer to escape. Shutdown the computer while theres still time.'", "cost": 0, "impact": 0, "special": true})
+
+	if current_day > 3:
+		_corrupt_deck()
+
 	approve.show(); deny.show(); skip.show()
 	cafeteria_ui.hide()
 	approve.disabled = false; deny.disabled = false; skip.disabled = false
 	set_process(true)
 	update_ui()
 
+func _corrupt_deck():
+	var index = randi() % active_shift_deck.size()
+	if not active_shift_deck[index].has("special"):
+		active_shift_deck[index]["text"] = "I can see you through the webcam. You haven't blinked in four minutes."
+
 func _process(delta: float) -> void:
 	if current_letter_index < active_shift_deck.size() and not processing_active and not shift_complete:
+		if is_showing_special:
+			special_timer -= delta
+			update_countdown_display()
+			if special_timer <= 0:
+				_skip_special_letter()
+			return
+
 		time_since_last_action += delta
 		if time_since_last_action >= inactivity_limit:
 			current_happiness -= drain_speed * delta
@@ -90,29 +138,63 @@ func _process(delta: float) -> void:
 		if current_happiness <= 0: _trigger_game_over()
 
 func update_ui() -> void:
-	daily_funds_label.text = "Funds: $" + str(snapped(current_funds, 0.01))
+	if is_showing_error: return 
+	
+	daily_funds_label.text = "DAY " + str(current_day) + "\nFunds:\n$" + str(snapped(current_funds, 0.01))
 	happiness_level.value = current_happiness
 	letter_label.pivot_offset = Vector2.ZERO
 	letter_label.rotation = 0
 	
 	if current_letter_index < active_shift_deck.size():
 		var l = active_shift_deck[current_letter_index]
-		letter_label.text = l["text"] + "\n\n[CLAIM AMOUNT: $" + str(l["cost"]) + "]"
-		letter_label.modulate = Color(1, 0.5, 0.5) if l["impact"] > 25 else Color(1, 1, 1)
+		if l.has("special"):
+			is_showing_special = true
+			special_timer = 15.0
+			letter_label.modulate = Color(1, 0, 0) if not l.has("boss") else Color(1, 1, 0) # Red for 911, Yellow for Boss
+			update_countdown_display()
+		else:
+			is_showing_special = false
+			letter_label.text = l["text"] + "\n\n[CLAIM AMOUNT: $" + str(l["cost"]) + "]"
+			letter_label.modulate = Color(1, 0.5, 0.5) if l["impact"] > 25 else Color(1, 1, 1)
 	else:
 		_end_shift()
 
-func process_decision(choice: String) -> void:
-	if current_letter_index >= active_shift_deck.size() or processing_active or shift_complete: return
+func update_countdown_display() -> void:
 	var l = active_shift_deck[current_letter_index]
+	var header = ">>> INCOMING TRANSMISSION <<<" if l.has("boss") else ">>> ENCRYPTED MESSAGE <<<"
+	letter_label.text = header + "\n\n" + l["text"] + "\n\n[SIGNAL LOST IN: " + str(ceil(special_timer)) + "s]"
+
+func _skip_special_letter() -> void:
+	is_showing_special = false
+	current_letter_index += 1
+	update_ui()
+
+# --- New Ending Logic ---
+
+# Call this if the player clicks a "Shutdown" button in your OS UI
+func trigger_shutdown_victory():
+	_apply_horror_screen("SYSTEM OFFLINE.\n\nYou pulled the plug. The office is dark.\nYou are finally free.\n\nHAPPY ENDING.")
+
+func _trigger_afterlife_ending():
+	_apply_horror_screen("PROMOTION DAY.\n\nHR has arrived. The door is locked.\nYou are being promoted to the afterlife.\n\nGAME OVER.")
+
+# --- Existing Decisions & UI Logic ---
+
+func process_decision(choice: String) -> void:
+	if current_letter_index >= active_shift_deck.size() or processing_active or shift_complete or is_showing_error: return
+	var l = active_shift_deck[current_letter_index]
+	
 	if choice == "approve" and current_funds < l["cost"]:
-		letter_label.text = "ERROR: SYSTEM CANNOT AUTHORIZE DEBT."
+		_show_temporary_error("ERROR: SYSTEM CANNOT AUTHORIZE DEBT.")
 		return
+		
 	processing_active = true
 	time_since_last_action = 0.0
 	approve.disabled = true; deny.disabled = true; skip.disabled = true
+	
 	var glitch_intensity = float(l["impact"]) / 40.0 if l["impact"] > 15 else 0.0
 	await _run_upload_sequence(glitch_intensity)
+	
 	match choice:
 		"approve":
 			current_happiness = clamp(current_happiness + l["impact"], 0, 100)
@@ -121,8 +203,18 @@ func process_decision(choice: String) -> void:
 			current_happiness -= (l["impact"] * 0.6)
 		"skip":
 			current_happiness -= 15.0 
+			
 	current_letter_index += 1
 	processing_active = false
+	approve.disabled = false; deny.disabled = false; skip.disabled = false
+	update_ui()
+
+func _show_temporary_error(msg: String) -> void:
+	is_showing_error = true
+	approve.disabled = true; deny.disabled = true; skip.disabled = true
+	letter_label.text = msg
+	await get_tree().create_timer(5.0).timeout 
+	is_showing_error = false
 	approve.disabled = false; deny.disabled = false; skip.disabled = false
 	update_ui()
 
@@ -133,6 +225,7 @@ func _run_upload_sequence(intensity: float) -> void:
 	var duration = 1.2 + (intensity * 1.5)
 	var elapsed = 0.0
 	letter_label.modulate = Color(1, 1, 1)
+	
 	while elapsed < duration:
 		var frame_text = base_text
 		if intensity > 0.3 and randf() < 0.05:
@@ -144,9 +237,11 @@ func _run_upload_sequence(intensity: float) -> void:
 					var pos = randi() % text_array.size()
 					text_array[pos] = chars[randi() % chars.length()]
 			frame_text = "".join(PackedStringArray(text_array))
+			
 		letter_label.text = frame_text
 		if intensity > 0.1:
 			letter_label.pivot_offset = Vector2(randf_range(-10, 10) * intensity, randf_range(-10, 10) * intensity)
+		
 		var wait = randf_range(0.05, 0.1)
 		await get_tree().create_timer(wait).timeout
 		elapsed += wait
@@ -167,9 +262,6 @@ func _end_shift() -> void:
 	cafeteria_ui.show()
 
 func get_current_food_price() -> float:
-	# Formula updated: 65% hunger results in $200. 0% hunger results in $400.
-	# (100 - 65) = 35. 200 + (35 * 5.71) is not what we want.
-	# We want: Price = 200 + (65 - current_hunger) * (200/65)
 	return 200.0 + (65.0 - current_hunger) * (200.0 / 65.0)
 
 func _on_yes_pressed():
@@ -182,7 +274,7 @@ func _on_yes_pressed():
 		current_hunger = 100.0
 		_finish_day()
 	else:
-		letter_label.text = "INSUFFICIENT PERSONAL FUNDS.\nSTARVATION IS NOT AN EXCUSE."
+		_show_temporary_error("INSUFFICIENT PERSONAL FUNDS.\nSTARVATION IS NOT AN EXCUSE.")
 
 func _on_no_pressed():
 	current_hunger = clamp(current_hunger - 35, 0, 100)
@@ -202,6 +294,7 @@ func _pay_starvation_fee():
 		_trigger_poverty_death()
 
 func _finish_day():
+	current_day += 1
 	cafeteria_ui.hide()
 	letter_label.text = "REST IS MANDATORY. \n\nNext Shift at 9:00."
 	var desktop = self
@@ -212,21 +305,18 @@ func _finish_day():
 		desktop = desktop.get_parent()
 
 func _trigger_poverty_death():
-	_apply_horror_screen("Your Fired!\nThe world only has room for the wealthy.")
+	_apply_horror_screen("YOU'RE FIRED!\nThe world only has room for the wealthy.")
 
 func _trigger_game_over():
-	_apply_horror_screen("Your Fired!\nThis company doesn't need useless employees.")
+	_apply_horror_screen("YOU'RE FIRED!\nThis company doesn't need useless employees.")
 
 func _apply_horror_screen(message: String):
 	set_process(false)
 	shift_complete = true
 	cafeteria_ui.hide()
-	
-	# Hide buttons so they don't peek through
 	approve.hide(); deny.hide(); skip.hide()
 	yes.hide(); no.hide()
 
-	# Find the Main Script (the Control node) and trigger the death screen
 	var main_game = self
 	while main_game != null:
 		if main_game.has_method("trigger_death_screen"):
@@ -237,7 +327,9 @@ func _apply_horror_screen(message: String):
 func hard_reset():
 	total_savings = 0.0
 	current_hunger = 100.0
-	# Add any other upgrade variables here to reset them (e.g. conversion_rate = 10.0)
+	current_day = 1
+	has_bought_mystery_item = false
+	is_marked_for_promotion = false
 	reset_for_new_shift()
 
 func _on_approve_pressed(): process_decision("approve")
